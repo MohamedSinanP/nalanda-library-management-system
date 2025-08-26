@@ -1,11 +1,12 @@
 // src/services/user.service.ts
 import { UserRepository } from "../repositories/user.repository";
 import IAuthService from "../interfaces/services/auth.service";
-import { IUserModel, IUser } from "../types/user";
+import { IUser } from "../types/user";
 import bcrypt from "bcrypt";
 import { JwtService } from "../utils/jwt";
 import { StatusCode } from "../types/type";
 import { HttpError } from "../utils/http.error";
+import { UserDTO } from "../dtos/user.dto";
 
 export class AuthService implements IAuthService {
   private _jwtService: JwtService;
@@ -17,7 +18,7 @@ export class AuthService implements IAuthService {
   async createUser(data: IUser): Promise<{
     accessToken: string;
     refreshToken: string;
-    user: IUserModel;
+    user: UserDTO;
   }> {
     try {
       // check if email exists
@@ -36,7 +37,8 @@ export class AuthService implements IAuthService {
       const refreshToken = await this._jwtService.generateRefreshToken(user._id.toString(), user.role);
       await this._userRepo.update(String(user._id), { refreshToken });
 
-      return { accessToken, refreshToken, user };
+      const userDto = new UserDTO(user);
+      return { accessToken, refreshToken, user: userDto };
     } catch (err: any) {
       if (err instanceof HttpError) throw err;
       throw new HttpError(StatusCode.INTERNAL_SERVER_ERROR, "Failed to create user", err);
@@ -46,7 +48,7 @@ export class AuthService implements IAuthService {
   async login(data: { email: string; password: string }): Promise<{
     accessToken: string;
     refreshToken: string;
-    user: IUserModel
+    user: UserDTO
   }> {
     try {
       const user = await this._userRepo.findByEmail(data.email);
@@ -59,8 +61,9 @@ export class AuthService implements IAuthService {
       const accessToken = await this._jwtService.generateAccessToken(user._id.toString(), user.role);
       const refreshToken = await this._jwtService.generateRefreshToken(user._id.toString(), user.role);
       await this._userRepo.update(String(user._id), { refreshToken });
+      const userDto = new UserDTO(user);
 
-      return { accessToken, refreshToken, user };
+      return { accessToken, refreshToken, user: userDto };
     } catch (err: any) {
       if (err instanceof HttpError) throw err;
       throw new HttpError(StatusCode.INTERNAL_SERVER_ERROR, "Login failed", err);

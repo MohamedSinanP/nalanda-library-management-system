@@ -1,15 +1,16 @@
+import { UserDTO } from "../../dtos/user.dto";
 import { IUser, IUserModel } from "../../types/user";
 
 export default interface IAuthService {
   createUser(data: IUser): Promise<{
     accessToken: string;
     refreshToken: string;
-    user: IUserModel;
+    user: UserDTO;
   }>;
   login(data: { email: string; password: string }): Promise<{
     accessToken: string;
     refreshToken: string;
-    user: IUserModel;
+    user: UserDTO;
   }>;
   rotateRefreshToken(oldRefreshToken: string): Promise<{ refreshToken: string, accessToken: string }>
   logout(userId: string): Promise<void>;

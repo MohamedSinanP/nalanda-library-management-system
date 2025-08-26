@@ -5,14 +5,17 @@ import IBookService from "../interfaces/services/book.service";
 import { HttpResponse } from "../utils/http.response";
 import { StatusCode } from "../types/type";
 import { HttpError } from "../utils/http.error";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 
 export class BookController implements IBookController {
   constructor(private bookService: IBookService) { }
 
   async addBook(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
+      const { user } = req as AuthenticatedRequest;
+      const userId = user?.userId;
       const data = req.body;
-      const book = await this.bookService.addBook(data);
+      const book = await this.bookService.addBook(data, userId);
       res.status(StatusCode.CREATED).json(HttpResponse.created(book, "Book added successfully"));
     } catch (err) {
       next(err);
@@ -51,9 +54,45 @@ export class BookController implements IBookController {
       const page = Number(req.query.page) || 1;
       const limit = Number(req.query.limit) || 10;
       const search = req.query.search?.toString() || "";
+      const genre = req.query.genre?.toString() || "";
+      const author = req.query.author?.toString() || "";
 
-      const result = await this.bookService.listBooks(page, limit, search);
+      const filters = { search, genre, author };
+      const result = await this.bookService.listBooks(page, limit, filters);
       res.status(StatusCode.OK).json(HttpResponse.success(result, "Books fetched successfully"));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async listBooksByAdmin(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { user } = req as AuthenticatedRequest;
+      const userId = user?.userId;
+      const page = Number(req.query.page) || 1;
+      const limit = Number(req.query.limit) || 10;
+      const search = req.query.search?.toString() || "";
+
+      const result = await this.bookService.listBooksByAdmin(userId, page, limit, search);
+      res.status(StatusCode.OK).json(HttpResponse.success(result, "Books fetched successfully for admin"));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getGenres(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const genres = await this.bookService.getGenres();
+      res.status(StatusCode.OK).json(HttpResponse.success(genres, "Genres fetched successfully"));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getAuthors(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const authors = await this.bookService.getAuthors();
+      res.status(StatusCode.OK).json(HttpResponse.success(authors, "Authors fetched successfully"));
     } catch (err) {
       next(err);
     }

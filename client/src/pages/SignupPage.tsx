@@ -1,27 +1,151 @@
-import { useState } from 'react';
-import { BookOpen, User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { User, Mail, Lock, Eye, EyeOff } from 'lucide-react';
+import { signup } from '../apis/authApis';
+import { setAuth } from '../redux/slices/authSlice';
+import type { UserFormData, SignupApiResponse, SignupErrors, SignupFormData } from '../types/type';
+import Logo from '../components/Logo';
+import type { RootState } from '../redux/store'; // Import RootState for typing
 
-const SignupComponent = () => {
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+const SignupPage = () => {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { user, accessToken } = useSelector((state: RootState) => state.auth); // Access auth state
+  const [formData, setFormData] = useState<SignupFormData>({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: 'Member',
+  });
+  const [errors, setErrors] = useState<SignupErrors>({
+    fullName: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    role: '',
+  });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  // Redirect if already logged in
+  useEffect(() => {
+    if (user && accessToken) {
+      navigate('/');
+    }
+  }, [user, accessToken, navigate]);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.currentTarget;
+    setFormData({ ...formData, [name]: value });
+    setErrors({ ...errors, [name]: '', server: '' });
+  };
+
+  const validateForm = (): boolean => {
+    let valid = true;
+    const newErrors: SignupErrors = {
+      fullName: '',
+      email: '',
+      password: '',
+      confirmPassword: '',
+      role: '',
+    };
+    if (!formData.fullName) {
+      newErrors.fullName = 'Full name is required';
+      valid = false;
+    } else if (formData.fullName.length < 2) {
+      newErrors.fullName = 'Full name must be at least 2 characters long';
+      valid = false;
+    }
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+      valid = false;
+    } else if (!emailRegex.test(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+      valid = false;
+    }
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+      valid = false;
+    } else if (!passwordRegex.test(formData.password)) {
+      newErrors.password =
+        'Password must be at least 8 characters, include an uppercase letter, lowercase letter, number, and special character';
+      valid = false;
+    }
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = 'Please confirm your password';
+      valid = false;
+    } else if (formData.confirmPassword !== formData.password) {
+      newErrors.confirmPassword = 'Passwords do not match';
+      valid = false;
+    }
+    if (!formData.role) {
+      newErrors.role = 'Please select a role';
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  };
+
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    try {
+      const payload: UserFormData = {
+        name: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      };
+      const data: SignupApiResponse = await signup(payload);
+
+      if (!data.success || !data.data.user) {
+        setErrors({ ...errors, server: data.message || 'Signup failed. Please try again.' });
+        return;
+      }
+      dispatch(setAuth({
+        user: {
+          name: data.data.user.name,
+          email: data.data.user.email,
+          role: data.data.user.role,
+        },
+        accessToken: data.data.accessToken,
+      }));
+      setFormData({
+        fullName: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        role: 'Member',
+      });
+      navigate('/');
+    } catch (error: any) {
+      setErrors({ ...errors, server: error.message || 'An error occurred. Please try again later.' });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Render nothing or a loading state until redirect occurs
+  if (user && accessToken) {
+    return null; // Optionally, render a loading spinner or nothing while redirecting
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Logo and Heading */}
-        <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-blue-600 rounded-full mb-6 shadow-lg">
-            <BookOpen className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-4xl font-bold text-blue-900 mb-2">Nalanda</h1>
-          <p className="text-blue-600 text-lg font-medium">Library Management System</p>
-          <p className="text-gray-600 mt-2">Create your account to get started</p>
-        </div>
-
-        {/* Signup Form */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
+        <Logo />
+        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl p-8 border border-blue-100">
           <div className="space-y-6">
-            {/* Full Name Input */}
+            {errors.server && <p className="text-red-500 text-sm text-center">{errors.server}</p>}
             <div>
               <label className="block text-blue-900 text-sm font-semibold mb-2">Full Name</label>
               <div className="relative">
@@ -30,13 +154,16 @@ const SignupComponent = () => {
                 </div>
                 <input
                   type="text"
-                  className="w-full pl-10 pr-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 border ${errors.fullName ? 'border-red-500' : 'border-blue-200'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200`}
                   placeholder="Enter your full name"
+                  disabled={isLoading}
                 />
+                {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
               </div>
             </div>
-
-            {/* Email Input */}
             <div>
               <label className="block text-blue-900 text-sm font-semibold mb-2">Email Address</label>
               <div className="relative">
@@ -45,13 +172,16 @@ const SignupComponent = () => {
                 </div>
                 <input
                   type="email"
-                  className="w-full pl-10 pr-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-4 py-3 border ${errors.email ? 'border-red-500' : 'border-blue-200'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200`}
                   placeholder="Enter your email"
+                  disabled={isLoading}
                 />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
               </div>
             </div>
-
-            {/* Password Input */}
             <div>
               <label className="block text-blue-900 text-sm font-semibold mb-2">Password</label>
               <div className="relative">
@@ -59,14 +189,19 @@ const SignupComponent = () => {
                   <Lock className="h-5 w-5 text-blue-400" />
                 </div>
                 <input
-                  type={showPassword ? "text" : "password"}
-                  className="w-full pl-10 pr-12 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                  type={showPassword ? 'text' : 'password'}
+                  name="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-12 py-3 border ${errors.password ? 'border-red-500' : 'border-blue-200'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200`}
                   placeholder="Create a password"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
+                  disabled={isLoading}
                 >
                   {showPassword ? (
                     <EyeOff className="h-5 w-5 text-blue-400 hover:text-blue-600" />
@@ -75,9 +210,8 @@ const SignupComponent = () => {
                   )}
                 </button>
               </div>
+              {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
             </div>
-
-            {/* Confirm Password Input */}
             <div>
               <label className="block text-blue-900 text-sm font-semibold mb-2">Confirm Password</label>
               <div className="relative">
@@ -85,14 +219,19 @@ const SignupComponent = () => {
                   <Lock className="h-5 w-5 text-blue-400" />
                 </div>
                 <input
-                  type={showConfirmPassword ? "text" : "password"}
-                  className="w-full pl-10 pr-12 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200"
+                  type={showConfirmPassword ? 'text' : 'password'}
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  className={`w-full pl-10 pr-12 py-3 border ${errors.confirmPassword ? 'border-red-500' : 'border-blue-200'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200`}
                   placeholder="Confirm your password"
+                  disabled={isLoading}
                 />
                 <button
                   type="button"
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  disabled={isLoading}
                 >
                   {showConfirmPassword ? (
                     <EyeOff className="h-5 w-5 text-blue-400 hover:text-blue-600" />
@@ -101,42 +240,30 @@ const SignupComponent = () => {
                   )}
                 </button>
               </div>
+              {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
             </div>
-
-            {/* User Role Selection */}
             <div>
               <label className="block text-blue-900 text-sm font-semibold mb-2">User Role</label>
-              <select className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200">
-                <option value="member">Member</option>
-                <option value="admin">Admin</option>
+              <select
+                name="role"
+                value={formData.role}
+                onChange={handleInputChange}
+                className={`w-full px-4 py-3 border ${errors.role ? 'border-red-500' : 'border-blue-200'} rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all duration-200`}
+                disabled={isLoading}
+              >
+                <option value="Member">Member</option>
+                <option value="Admin">Admin</option>
               </select>
+              {errors.role && <p className="text-red-500 text-sm mt-1">{errors.role}</p>}
             </div>
-
-            {/* Terms and Conditions */}
-            <div className="flex items-center">
-              <input
-                id="agree-terms"
-                name="agree-terms"
-                type="checkbox"
-                className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-blue-300 rounded"
-              />
-              <label htmlFor="agree-terms" className="ml-2 block text-sm text-gray-600">
-                I agree to the{' '}
-                <button className="text-blue-600 hover:text-blue-500">
-                  Terms and Conditions
-                </button>
-              </label>
-            </div>
-
-            {/* Signup Button */}
             <button
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105"
+              type="submit"
+              className={`w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 transform hover:scale-105 cursor-pointer ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+              disabled={isLoading}
             >
-              Create Account
+              {isLoading ? 'Creating Account...' : 'Create Account'}
             </button>
           </div>
-
-          {/* Divider */}
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -147,20 +274,18 @@ const SignupComponent = () => {
               </div>
             </div>
           </div>
-
-          {/* Sign In Link */}
           <div className="mt-6">
-            <button
-              type="button"
-              className="w-full flex justify-center py-3 px-4 border border-blue-600 rounded-lg shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200"
+            <Link
+              to="/login"
+              className={`w-full flex justify-center py-3 px-4 border border-blue-600 rounded-lg shadow-sm text-sm font-medium text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all duration-200 cursor-pointer ${isLoading ? 'opacity-50 pointer-events-none' : ''}`}
             >
               Sign in to existing account
-            </button>
+            </Link>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );
 };
 
-export default SignupComponent;
+export default SignupPage;

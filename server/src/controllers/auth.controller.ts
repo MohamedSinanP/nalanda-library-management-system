@@ -5,6 +5,7 @@ import IAuthService from "../interfaces/services/auth.service";
 import { HttpResponse } from "../utils/http.response";
 import { StatusCode } from "../types/type";
 import { HttpError } from "../utils/http.error";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware";
 
 export class AuthController implements IAuthController {
   constructor(private _authService: IAuthService) { }
@@ -80,7 +81,8 @@ export class AuthController implements IAuthController {
 
   async logout(req: Request, res: Response, next: NextFunction): Promise<void> {
     try {
-      const userId = "todo";
+      const { user } = req as AuthenticatedRequest;
+      const userId = user?.userId;
       if (!userId) throw new HttpError(StatusCode.UNAUTHORIZED, "Unauthorized");
 
       await this._authService.logout(userId);

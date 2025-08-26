@@ -1,7 +1,8 @@
-import { IBorrowModel } from "../../types/borrow";
+import { BorrowDTO } from "../../dtos/borrow.dto";
 
 export default interface IBorrowService {
-  borrowBook(userId: string, bookId: string): Promise<IBorrowModel>;
-  returnBook(userId: string, bookId: string): Promise<IBorrowModel | null>;
-  getBorrowHistory(userId: string): Promise<IBorrowModel[]>;
+  borrowBook(userId: string, bookId: string): Promise<BorrowDTO>;
+  returnBook(userId: string, bookId: string): Promise<BorrowDTO | null>;
+  getBorrowHistory(userId: string): Promise<BorrowDTO[]>;
+  getBorrowedBookIds(userId: string): Promise<string[]>;
 }

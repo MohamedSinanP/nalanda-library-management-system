@@ -1,5 +1,6 @@
-
-import { Document, Types } from "mongoose";
+import mongoose, { Document, Types } from "mongoose";
+import { IUserModel } from "./user";
+import { IBookModel } from "./book";
 
 export interface IBorrow {
   user: Types.ObjectId;
@@ -11,8 +12,11 @@ export interface IBorrow {
 }
 
 export interface IBorrowModel extends Document {
-  user: Types.ObjectId;
-  book: Types.ObjectId;
+  _id: mongoose.Types.ObjectId;
+  user: IUserModel | Types.ObjectId;
+  book: IBookModel | Types.ObjectId;
   borrowDate: Date;
   returnDate?: Date;
+  createdAt: Date;
+  updatedAt: Date;
 }

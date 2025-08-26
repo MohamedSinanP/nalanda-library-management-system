@@ -14,10 +14,14 @@ export class ReportService implements IReportService {
   }
 
   async activeMembers(limit = 10) {
-    return this._borrowRepo.activeMembers();
+    return this._borrowRepo.activeMembers(limit);
   }
 
   async bookAvailabilitySummary() {
     return await this._bookRepo.getBookAvailabilitySummary();
   }
 }
+
+const borrowRepo = new BorrowRepository();
+const bookRepo = new BookRepository();
+export const reportService = new ReportService(borrowRepo, bookRepo);

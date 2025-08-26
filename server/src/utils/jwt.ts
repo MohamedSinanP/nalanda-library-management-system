@@ -37,7 +37,9 @@ export class JwtService implements IJwtService {
       const payload = JSON.parse(new TextDecoder().decode(plaintext));
 
       if (payload.exp && Date.now() / 1000 > payload.exp) {
-        throw new Error('Access token expired');
+        const err = new Error('Access token expired');
+        err.name = 'TokenExpiredError';
+        throw err;
       }
 
       return payload;

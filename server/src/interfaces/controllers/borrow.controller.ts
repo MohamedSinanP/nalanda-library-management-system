@@ -3,4 +3,5 @@ export interface IBorrowController {
   borrowBook(req: Request, res: Response, next: NextFunction): Promise<void>
   returnBook(req: Request, res: Response, next: NextFunction): Promise<void>
   getBorrowHistory(req: Request, res: Response, next: NextFunction): Promise<void>
+  getBorrowStatus(req: Request, res: Response, next: NextFunction): Promise<void>
 }

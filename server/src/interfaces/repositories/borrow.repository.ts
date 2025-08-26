@@ -6,4 +6,5 @@ export default interface IBorrowRepository extends IBaseRepository<IBorrowModel>
   mostBorrowedBooks(limit?: number): Promise<Array<{ bookId: string; title: string; author: string; borrowCount: number }>>;
   countActiveBorrows(): Promise<number>;
   activeMembers(limit?: number): Promise<Array<{ userId: string; name: string; email: string; borrowCount: number }>>;
+  getActiveBorrowsByUser(userId: string): Promise<IBorrowModel[]>;
 }

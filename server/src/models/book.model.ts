@@ -10,6 +10,7 @@ const bookSchema = new Schema<IBookModel>(
     genre: { type: String, required: true },
     totalCopies: { type: Number, required: true, min: 0 },
     copies: { type: Number, required: true, min: 0 },
+    addedBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
   },
   { timestamps: true }
 );

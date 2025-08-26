@@ -78,4 +78,8 @@ export class BorrowRepository extends BaseRepository<IBorrowModel> implements IB
     const count = await this.model.countDocuments({ returnDate: { $exists: false } });
     return count;
   }
+
+  async getActiveBorrowsByUser(userId: string): Promise<IBorrowModel[]> {
+    return Borrow.find({ user: userId, returnDate: null }).select("book");
+  }
 }

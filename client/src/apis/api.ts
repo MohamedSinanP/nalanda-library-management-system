@@ -56,7 +56,7 @@ api.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      originalRequest.url !== "/auth/refresh"
+      originalRequest.url !== "/auth/refresh-token"
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -76,11 +76,11 @@ api.interceptors.response.use(
 
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh`,
+          `${import.meta.env.VITE_API_BASE_URL}/auth/refresh-token`,
           {},
           { withCredentials: true }
         );
-        const newAccessToken = response.data.data.newAccessToken;
+        const newAccessToken = response.data.data.accessToken;
 
         store.dispatch(setAccessToken(newAccessToken));
         processQueue(null, newAccessToken);
@@ -103,7 +103,7 @@ api.interceptors.response.use(
 
     if (error.response?.status === 403) {
       toast.error("Access denied.");
-      navigateTo("/unauthorized");
+      navigateTo("/login");
     }
 
     return Promise.reject(error);

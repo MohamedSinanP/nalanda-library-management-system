@@ -10,6 +10,9 @@ router.post("/", authenticate([UserRole.ADMIN]), bookController.addBook.bind(boo
 router.put("/:id", authenticate([UserRole.ADMIN]), bookController.updateBook.bind(bookController));
 router.delete("/:id", authenticate([UserRole.ADMIN]), bookController.deleteBook.bind(bookController));
 // to show list of books to the users
+router.get('/admin-book', authenticate([UserRole.ADMIN]), bookController.listBooksByAdmin.bind(bookController));
 router.get("/", bookController.listBooks.bind(bookController));
+router.get("/genres", bookController.getGenres.bind(bookController));
+router.get("/authors", bookController.getAuthors.bind(bookController));
 
 export default router;

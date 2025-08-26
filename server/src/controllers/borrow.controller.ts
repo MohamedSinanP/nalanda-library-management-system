@@ -14,7 +14,7 @@ export class BorrowController implements IBorrowController {
       const { user } = req as AuthenticatedRequest;
       const userId = user?.userId;
       if (userId) {
-        const { bookId } = req.body;
+        const bookId = req.params.id;
         const borrow = await this.borrowService.borrowBook(userId!, bookId);
         res.status(StatusCode.CREATED).json(HttpResponse.created(borrow, "Book borrowed successfully"));
       }
@@ -27,7 +27,7 @@ export class BorrowController implements IBorrowController {
     try {
       const { user } = req as AuthenticatedRequest;
       const userId = user?.userId;
-      const { bookId } = req.body;
+      const bookId = req.params.id;
       const record = await this.borrowService.returnBook(userId!, bookId);
       res.status(StatusCode.OK).json(HttpResponse.success(record, "Book returned successfully"));
     } catch (err) {
@@ -40,6 +40,25 @@ export class BorrowController implements IBorrowController {
       const { user } = req as AuthenticatedRequest;
       const userId = user?.userId; const history = await this.borrowService.getBorrowHistory(userId!);
       res.status(StatusCode.OK).json(HttpResponse.success(history, "Borrow history fetched"));
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async getBorrowStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const { user } = req as AuthenticatedRequest;
+      const userId = user?.userId;
+
+      if (!userId) {
+        res.status(StatusCode.UNAUTHORIZED).json(HttpResponse.error("Unauthorized"));
+        return
+      }
+
+      // Call service method to get borrowed book IDs
+      const borrowedBookIds = await this.borrowService.getBorrowedBookIds(userId);
+
+      res.status(StatusCode.OK).json(HttpResponse.success(borrowedBookIds, "Borrow status fetched successfully"));
     } catch (err) {
       next(err);
     }
