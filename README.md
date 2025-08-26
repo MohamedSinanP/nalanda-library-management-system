@@ -1,6 +1,6 @@
 # Nalanda Library Management System
 
-Welcome to the **Nalanda Library Management System**, a full-stack library management system built as part of the backend developer task for **Heumn Interactive Private Limited**.
+a full-stack library management system project built to demonstrate backend and frontend skills
 
 This repository contains both the **backend (REST API)** and the **frontend (React + Redux)** for managing users, books, borrowing, and reporting.
 
@@ -99,7 +99,7 @@ PORT=3000
 MONGO_URI="your datase url cloud (atlas) or local"
 JWT_ACCESS_SECRET="your jwt access secret"
 JWT_REFRESH_SECRET="your jwt refresh secret"
-NODE_ENV="developement"
+NODE_ENV="development"
 CLIENT_URL="http://localhost:5173"
 ```
 
