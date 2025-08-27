@@ -1,5 +1,5 @@
-import { IBorrowModel } from "../../types/borrow";
-import IBaseRepository from "./base.repository";
+import { IBorrowModel } from "../../types/borrow.js";
+import IBaseRepository from "./base.repository.js";
 
 export default interface IBorrowRepository extends IBaseRepository<IBorrowModel> {
   findActiveBorrow(userId: string, bookId: string): Promise<IBorrowModel | null>;

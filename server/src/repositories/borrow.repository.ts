@@ -1,7 +1,7 @@
-import IBorrowRepository from "../interfaces/repositories/borrow.repository";
-import { Borrow } from "../models/borrow.model";
-import { IBorrowModel } from "../types/borrow";
-import { BaseRepository } from "./base.repository";
+import IBorrowRepository from "../interfaces/repositories/borrow.repository.js";
+import { Borrow } from "../models/borrow.model.js";
+import { IBorrowModel } from "../types/borrow.js";
+import { BaseRepository } from "./base.repository.js";
 
 export class BorrowRepository extends BaseRepository<IBorrowModel> implements IBorrowRepository {
   constructor() {

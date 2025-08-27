@@ -1,10 +1,10 @@
-import { BorrowRepository } from "../repositories/borrow.repository";
-import { BookRepository } from "../repositories/book.repository";
-import IBorrowService from "../interfaces/services/borrow.service";
-import { HttpError } from "../utils/http.error";
-import { StatusCode } from "../types/type";
+import { BorrowRepository } from "../repositories/borrow.repository.js";
+import { BookRepository } from "../repositories/book.repository.js";
+import IBorrowService from "../interfaces/services/borrow.service.js";
+import { HttpError } from "../utils/http.error.js";
+import { StatusCode } from "../types/type.js";
 import { Types } from "mongoose";
-import { BorrowDTO } from "../dtos/borrow.dto";
+import { BorrowDTO } from "../dtos/borrow.dto.js";
 
 export class BorrowService implements IBorrowService {
   constructor(

@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { borrowController } from "../controllers/borrow.controller";
-import { authenticate } from "../middlewares/auth.middleware";
-import { UserRole } from "../types/user";
+import { borrowController } from "../controllers/borrow.controller.js";
+import { authenticate } from "../middlewares/auth.middleware.js";
+import { UserRole } from "../types/user.js";
 
 const router = Router();
 

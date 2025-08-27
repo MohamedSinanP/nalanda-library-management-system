@@ -1,5 +1,5 @@
-import { IUserModel } from "../../types/user";
-import IBaseRepository from "./base.repository";
+import { IUserModel } from "../../types/user.js";
+import IBaseRepository from "./base.repository.js";
 
 export default interface IUserRepository extends IBaseRepository<IUserModel> {
   findByEmail(email: string): Promise<IUserModel | null>;

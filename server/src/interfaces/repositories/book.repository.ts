@@ -1,5 +1,5 @@
-import { IBookModel } from "../../types/book";
-import IBaseRepository from "./base.repository";
+import { IBookModel } from "../../types/book.js";
+import IBaseRepository from "./base.repository.js";
 
 export default interface IBookRepository extends IBaseRepository<IBookModel> {
   findPaginated(

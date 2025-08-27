@@ -1,7 +1,6 @@
-import { BorrowRepository } from "../repositories/borrow.repository";
-import { UserRepository } from "../repositories/user.repository";
-import { BookRepository } from "../repositories/book.repository";
-import IReportService from "../interfaces/services/report.service";
+import { BorrowRepository } from "../repositories/borrow.repository.js";
+import { BookRepository } from "../repositories/book.repository.js";
+import IReportService from "../interfaces/services/report.service.js";
 
 export class ReportService implements IReportService {
   constructor(

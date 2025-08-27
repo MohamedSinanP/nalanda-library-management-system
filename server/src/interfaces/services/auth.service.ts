@@ -1,5 +1,5 @@
-import { UserDTO } from "../../dtos/user.dto";
-import { IUser, IUserModel } from "../../types/user";
+import { UserDTO } from "../../dtos/user.dto.js";
+import { IUser } from "../../types/user.js";
 
 export default interface IAuthService {
   createUser(data: IUser): Promise<{

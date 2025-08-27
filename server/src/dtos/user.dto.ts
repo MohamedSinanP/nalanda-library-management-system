@@ -1,4 +1,4 @@
-import { IUserModel } from "../types/user";
+import { IUserModel } from "../types/user.js";
 
 export class UserDTO {
   name: string;

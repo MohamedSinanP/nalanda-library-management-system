@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { bookService } from "../services/book.service";
-import { IBookController } from "../interfaces/controllers/book.controller";
-import IBookService from "../interfaces/services/book.service";
-import { HttpResponse } from "../utils/http.response";
-import { StatusCode } from "../types/type";
-import { HttpError } from "../utils/http.error";
-import { AuthenticatedRequest } from "../middlewares/auth.middleware";
+import { bookService } from "../services/book.service.js";
+import { IBookController } from "../interfaces/controllers/book.controller.js";
+import IBookService from "../interfaces/services/book.service.js";
+import { HttpResponse } from "../utils/http.response.js";
+import { StatusCode } from "../types/type.js";
+import { HttpError } from "../utils/http.error.js";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 
 export class BookController implements IBookController {
   constructor(private bookService: IBookService) { }

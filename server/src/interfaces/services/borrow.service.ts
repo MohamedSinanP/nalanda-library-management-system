@@ -1,4 +1,4 @@
-import { BorrowDTO } from "../../dtos/borrow.dto";
+import { BorrowDTO } from "../../dtos/borrow.dto.js";
 
 export default interface IBorrowService {
   borrowBook(userId: string, bookId: string): Promise<BorrowDTO>;

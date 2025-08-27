@@ -1,6 +1,6 @@
-import { IBorrowModel } from "../types/borrow";
-import { UserDTO } from "./user.dto";
-import { BookDTO } from "./book.dto";
+import { IBorrowModel } from "../types/borrow.js";
+import { UserDTO } from "./user.dto.js";
+import { BookDTO } from "./book.dto.js";
 import mongoose from "mongoose";
 
 export class BorrowDTO {

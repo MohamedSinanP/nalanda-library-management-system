@@ -1,10 +1,10 @@
 // src/services/book.service.ts
-import { BookRepository } from "../repositories/book.repository";
-import IBookService from "../interfaces/services/book.service";
-import { IBook, IBookModel } from "../types/book";
-import { StatusCode } from "../types/type";
-import { HttpError } from "../utils/http.error";
-import { BookDTO } from "../dtos/book.dto";
+import { BookRepository } from "../repositories/book.repository.js";
+import IBookService from "../interfaces/services/book.service.js";
+import { IBook, IBookModel } from "../types/book.js";
+import { StatusCode } from "../types/type.js";
+import { HttpError } from "../utils/http.error.js";
+import { BookDTO } from "../dtos/book.dto.js";
 import { Types } from "mongoose";
 
 export class BookService implements IBookService {

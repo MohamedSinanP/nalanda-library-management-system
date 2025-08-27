@@ -2,13 +2,12 @@ import express from "express";
 import 'dotenv/config';
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import connectDB from "./config/db";
-import { errorHandler } from "./middlewares/error.middleware";
-import authRoutes from './routes/auth.routes';
-import bookRoutes from './routes/book.routes';
-import borrowRoutes from './routes/borrow.routes';
-import reportRoutes from './routes/report.routes';
-import { report } from "process";
+import connectDB from "./config/db.js";
+import { errorHandler } from "./middlewares/error.middleware.js";
+import authRoutes from './routes/auth.routes.js';
+import bookRoutes from './routes/book.routes.js';
+import borrowRoutes from './routes/borrow.routes.js';
+import reportRoutes from './routes/report.routes.js';
 
 connectDB();
 

@@ -1,5 +1,4 @@
-// src/dtos/book.dto.ts
-import { IBookModel } from "../types/book";
+import { IBookModel } from "../types/book.js";
 
 export class BookDTO {
   id: string;

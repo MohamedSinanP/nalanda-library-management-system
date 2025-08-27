@@ -1,5 +1,5 @@
-import { BookDTO } from "../../dtos/book.dto";
-import { IBook } from "../../types/book";
+import { BookDTO } from "../../dtos/book.dto.js";
+import { IBook } from "../../types/book.js";
 
 export default interface IBookService {
   addBook(data: IBook, userId: string): Promise<BookDTO>;

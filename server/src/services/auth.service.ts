@@ -1,12 +1,12 @@
 // src/services/user.service.ts
-import { UserRepository } from "../repositories/user.repository";
-import IAuthService from "../interfaces/services/auth.service";
-import { IUser } from "../types/user";
+import { UserRepository } from "../repositories/user.repository.js";
+import IAuthService from "../interfaces/services/auth.service.js";
+import { IUser } from "../types/user.js";
 import bcrypt from "bcrypt";
-import { JwtService } from "../utils/jwt";
-import { StatusCode } from "../types/type";
-import { HttpError } from "../utils/http.error";
-import { UserDTO } from "../dtos/user.dto";
+import { JwtService } from "../utils/jwt.js";
+import { StatusCode } from "../types/type.js";
+import { HttpError } from "../utils/http.error.js";
+import { UserDTO } from "../dtos/user.dto.js";
 
 export class AuthService implements IAuthService {
   private _jwtService: JwtService;

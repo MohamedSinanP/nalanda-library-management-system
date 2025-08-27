@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from "express";
-import { IBorrowController } from "../interfaces/controllers/borrow.controller";
-import IBorrowService from "../interfaces/services/borrow.service";
-import { HttpResponse } from "../utils/http.response";
-import { StatusCode } from "../types/type";
-import { AuthenticatedRequest } from "../middlewares/auth.middleware";
-import { borrowService } from "../services/borrow.service";
+import { IBorrowController } from "../interfaces/controllers/borrow.controller.js";
+import IBorrowService from "../interfaces/services/borrow.service.js";
+import { HttpResponse } from "../utils/http.response.js";
+import { StatusCode } from "../types/type.js";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
+import { borrowService } from "../services/borrow.service.js";
 
 export class BorrowController implements IBorrowController {
   constructor(private borrowService: IBorrowService) { }

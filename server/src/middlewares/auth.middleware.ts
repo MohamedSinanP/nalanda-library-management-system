@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
 import { jwtDecrypt } from "jose";
-import { HttpError } from "../utils/http.error";
+import { HttpError } from "../utils/http.error.js";
 
 
 export interface AuthenticatedRequest extends Request { user: { userId: string; role: string; }; }

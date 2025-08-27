@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import { IReportController } from "../interfaces/controllers/report.controller";
-import IReportService from "../interfaces/services/report.service";
-import { StatusCode } from "../types/type";
-import { HttpResponse } from "../utils/http.response";
-import { reportService } from "../services/report.service";
+import { IReportController } from "../interfaces/controllers/report.controller.js";
+import IReportService from "../interfaces/services/report.service.js";
+import { StatusCode } from "../types/type.js";
+import { HttpResponse } from "../utils/http.response.js";
+import { reportService } from "../services/report.service.js";
 
 export class ReportController implements IReportController {
   constructor(private reportService: IReportService) { }

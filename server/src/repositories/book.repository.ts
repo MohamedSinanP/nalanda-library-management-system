@@ -1,10 +1,10 @@
 import { Types } from "mongoose";
-import IBookRepository from "../interfaces/repositories/book.repository";
-import { Book } from "../models/book.model";
-import { IBookModel } from "../types/book";
-import { BaseRepository } from "./base.repository";
-import { StatusCode } from "../types/type";
-import { HttpError } from "../utils/http.error";
+import IBookRepository from "../interfaces/repositories/book.repository.js";
+import { Book } from "../models/book.model.js";
+import { IBookModel } from "../types/book.js";
+import { BaseRepository } from "./base.repository.js";
+import { StatusCode } from "../types/type.js";
+import { HttpError } from "../utils/http.error.js";
 
 export class BookRepository extends BaseRepository<IBookModel> implements IBookRepository {
   constructor() {

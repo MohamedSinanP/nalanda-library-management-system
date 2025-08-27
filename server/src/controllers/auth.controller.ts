@@ -1,11 +1,11 @@
 import { NextFunction, Request, Response } from "express";
-import { userService } from "../services/auth.service";
-import { IAuthController } from "../interfaces/controllers/auth.controller";
-import IAuthService from "../interfaces/services/auth.service";
-import { HttpResponse } from "../utils/http.response";
-import { StatusCode } from "../types/type";
-import { HttpError } from "../utils/http.error";
-import { AuthenticatedRequest } from "../middlewares/auth.middleware";
+import { userService } from "../services/auth.service.js";
+import { IAuthController } from "../interfaces/controllers/auth.controller.js";
+import IAuthService from "../interfaces/services/auth.service.js";
+import { HttpResponse } from "../utils/http.response.js";
+import { StatusCode } from "../types/type.js";
+import { HttpError } from "../utils/http.error.js";
+import { AuthenticatedRequest } from "../middlewares/auth.middleware.js";
 
 export class AuthController implements IAuthController {
   constructor(private _authService: IAuthService) { }
