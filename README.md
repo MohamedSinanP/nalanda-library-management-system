@@ -64,7 +64,6 @@ This repository contains both the **backend (REST API)** and the **frontend (Rea
 - React.js
 - Redux Toolkit
 - Tailwind CSS
-- EJS (optional, if used for templates)
 - Axios for API calls
 
 ---
@@ -95,7 +94,7 @@ npm install
 #### Create a .env file in the backend/ directory and add your environment variables:
 
 ```ini
-PORT=3000
+PORT=5000
 MONGO_URI="your datase url cloud (atlas) or local"
 JWT_ACCESS_SECRET="your jwt access secret"
 JWT_REFRESH_SECRET="your jwt refresh secret"
@@ -119,7 +118,7 @@ npm install
 #### Create a .env file in the frontend/ directory and add your environment variable:
 
 ```ini
-VITE_API_BASE_URL=http://localhost:3000/api
+VITE_API_BASE_URL=http://localhost:5000/api
 ```
 
 #### Start the frontend server:
